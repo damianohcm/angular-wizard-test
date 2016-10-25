@@ -240,7 +240,20 @@
 			path: 'views/customReportWizard/step3.html', 
 			isFirst: false, 
 			isLast: false, 
-			isCurrent: false
+			isCurrent: false,
+			validateAction: function validateStep3() {
+				if ($scope.model.entireLearningPath === false) {
+					this.hasError =  $scope.model.courses.filter(function(course) {
+						return course.selected;
+					}).length < 1;
+					this.errorMsg = this.hasError ? 'Please select at least one Course before proceeding' : undefined;
+				} else {
+					this.hasError = false;
+				}
+				this.isDone = !this.hasError;
+				console.log('validateStep3 this.hasError ' + this.hasError);
+				return this.hasError === false;
+			}
 		}, {
 			id: 4, 
 			title: 'Step 4', 

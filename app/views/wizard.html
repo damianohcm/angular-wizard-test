@@ -14,8 +14,7 @@
                 <div class="steps clearfix">
                     <a role="tab" ng-repeat="step in wizard.steps" 
                         ng-class="step.liClass" 
-                        aria-disabled="{{step.disabled}}" aria-selected="{{step.id === activeStep.id}}" 
-                        ng-click="clickOnStep(step)">
+                        aria-disabled="{{step.disabled}}" aria-selected="{{step.id === activeStep.id}}">
                         <span class="current-info audible">current step: </span>
                         <span class="number">{{step.id}}.</span> <span>{{step.title}}</span>
                         <span class="indicator" ng-show="step.isDone || step.hasError" title="{{step.errorMsg || 'Done'}}"><i ng-class="step.hasError ? 'fa fa-exclamation' : 'fa fa-check'"></i></span>
@@ -31,7 +30,7 @@
                     </a>
                 </div>
 
-                <div class="content"><ng-include src="wizard.activeStep.path"></ng-include></div>
+                <div ng-class="wizard.activeStep.hasError ? 'content error' : 'content'"><ng-include src="wizard.activeStep.path"></ng-include></div>
 
                 <div class="wizard-navigation">
                     <div class="actions clearfix">

@@ -332,6 +332,10 @@
     font-weight: bold;
     color: #000000;
 }
+.content.error .step-content h1 {
+    color: red;
+    background-color: yellow;
+}
 .step-content .sub-title {
     font-family:'Gotham';
     font-size: 14px;
