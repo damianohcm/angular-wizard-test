@@ -193,7 +193,7 @@
     outline: solid 3px red;
 }
 
-.wizard .steps .done > .checkmark {
+.wizard .steps a > .indicator {
     float: right;
     width: 36px;
     height: 36px;
@@ -204,10 +204,17 @@
     margin: -5px 25px 0 0;
     /*padding: 3px 0 0 3px;*/
 }
-.wizard .steps .done > .checkmark > i.fa {
+.wizard .steps a > .indicator > i.fa {
     color:white;
     font-size: 21px;
     margin: 8px 0 0 3px;
+}
+.wizard .steps a.error > .indicator {
+    background-color: yellow;
+    box-shadow: 1px 2px 0 0 darkred;
+}
+.wizard .steps a.error > .indicator > i.fa {
+    color:red;
 }
 
 

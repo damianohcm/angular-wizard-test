@@ -7,6 +7,92 @@
 
 		this.params = $routeParams;
 
+		// model lookups 
+		$scope.audienceOptions = [{
+			id: 1,
+			text: 'All Active Store Personnel'
+		}, {
+			id: 2,
+			text: 'Active Managers Only'
+		}, {
+			id: 3,
+			text: 'Active Shift Leaders only'
+		}];
+
+		$scope.hiredOptions = [{
+			id: 1,
+			text: 'Since the beginning of time',
+			otherField: undefined
+		}, {
+			id: 2,
+			text: 'After selected date ',
+			otherField: 'hiredAfter'
+		}];
+		
+		// model for wizard selections
+		$scope.model = {
+			// step 1
+			stores: [],
+			// step 2:
+			audience: $scope.audienceOptions[0],
+			hired: $scope.hiredOptions[0],
+			hiredAfter: undefined,
+			// step 3
+			entireLearningPath: true,
+			courses: []
+		};
+
+		// summary model for final step
+		$scope.summary = {
+		};
+		Object.defineProperty($scope.summary, 'stores', {
+			get: function() {
+				return $scope.model.stores.filter(function(store) {
+					return store.selected;
+				});
+			}
+		});
+		Object.defineProperty($scope.summary, 'learners', {
+			get: function() {
+				return $scope.model.audience.text;
+			}
+		});
+		Object.defineProperty($scope.summary, 'hired', {
+			get: function() {
+				return $scope.model.hired.otherField ? undefined : $scope.model.hired.text;
+			}
+		});
+		Object.defineProperty($scope.summary, 'hiredAfter', {
+			get: function() {
+				if ($scope.model.hiredAfter) {
+					return $filter('date')($scope.model.hiredAfter, 'shortDate');
+				} else {
+					return 'Not Selected';
+				}
+			}
+		});
+		Object.defineProperty($scope.summary, 'entireLearningPath', {
+			get: function() {
+				if ($scope.model.entireLearningPath) {
+					return 'Entire Learning Path';
+				} else {
+					return undefined;
+				}
+			}
+		});
+		Object.defineProperty($scope.summary, 'courses', {
+			get: function() {
+				if (!$scope.model.entireLearningPath) {
+					return $scope.model.courses.filter(function(course) {
+						return course.selected;
+					});
+				} else {
+					return [];
+				}
+			}
+		});
+
+		// wizard setup
 		$scope.wizard = wizardServiceFactory.getService('customReportWizardController');
 
 		/**
@@ -37,20 +123,36 @@
 		 */
 		$scope.nextStep = function() {
 			console.log('nextStep');
-			var wizard = $scope.wizard;
-			// wizard.validateStep(wizard.activeStep).then((isValid) => {
+			var wizard = $scope.wizard, currentStep = wizard.activeStep;
+			// wizard.validateStep(currentStep).then((isValid) => {
 			// 	if (isValid) {
 				// TODO: here we might have to call some other funciton that saves the data
 				//this.dataService.save(() => {
-					if (wizard.activeStep.id !== wizard.steps.length) {
-						var next = wizard.steps[wizard.activeStep.id];
-						if (next.id > wizard.activeStep.id) {
-							wizard.activeStep.isDone = true;
+					if (currentStep.id !== wizard.steps.length) {
+						var next = wizard.steps[currentStep.id];
+						if (next.id > currentStep.id) {
+							if (currentStep.validateAction) {
+								var validateResult = currentStep.validateAction();
+								console.log(currentStep.title + ' validateResult: ' + validateResult);
+								if (validateResult) {
+									wizard.setActiveStep(next);
+								} else {
+									currentStep.hasError = true;
+								}
+							} else {
+								currentStep.isDone = true;
+								wizard.setActiveStep(next);
+							}
 						}
-						wizard.setActiveStep(next);
 					} else {
-						wizard.isComplete = true;
-						wizard.close();
+
+						if (currentStep.validateAction) {
+							alert('need to validate step');
+						} else {
+							currentStep.isDone = true;
+							wizard.isComplete = true;
+							wizard.close();
+						}
 					}
 				//});
 			//	}
@@ -103,14 +205,35 @@
 			path: 'views/customReportWizard/step1.html', 
 			isFirst: true, 
 			isLast: false, 
-			isCurrent: true
+			isCurrent: true,
+			validateAction: function validateStep1() {
+				this.hasError =  $scope.model.stores.filter(function(store) {
+					return store.selected;
+				}).length < 1;
+				this.errorMsg = this.hasError ? 'Please select at least on PC before proceeding' : undefined;
+				this.isDone = !this.hasError;
+				console.log('validateStep1 this.hasError ' + this.hasError);
+				return this.hasError === false;
+			}
 		}, {
 			id: 2, 
 			title: 'Step 2', 
 			path: 'views/customReportWizard/step2.html', 
 			isFirst: false, 
 			isLast: false, 
-			isCurrent: false
+			isCurrent: false,
+			validateAction: function validateStep2() {
+				if ($scope.model.hired.otherField) {
+					var otherFieldValue = $scope.model[$scope.model.hired.otherField];
+					this.hasError = otherFieldValue === undefined;
+					this.errorMsg = this.hasError ? 'Please select a date for Hired After Selected Date' : undefined;
+				} else {
+					this.hasError = false;
+				}
+				this.isDone = !this.hasError;
+				console.log('validateStep2 this.hasError ' + this.hasError);
+				return this.hasError === false;
+			}
 		}, {
 			id: 3, 
 			title: 'Step 3', 
@@ -162,93 +285,12 @@
 
 		console.log('navigationItems', $scope.wizard.navigationItems)
 
-		// lookups 
-		$scope.audienceOptions = [{
-			id: 1,
-			text: 'All Active Store Personnel'
-		}, {
-			id: 2,
-			text: 'Active Managers Only'
-		}, {
-			id: 3,
-			text: 'Active Shift Leaders only'
-		}];
-
-		$scope.hiredOptions = [{
-			id: 1,
-			text: 'Since the beginning of time'
-		}, {
-			id: 2,
-			text: 'After selected date '
-		}];
 		
-		// model for wizard selections
-		$scope.model = {
-			// step 1
-			stores: [],
-			// step 2:
-			audience: $scope.audienceOptions[0],
-			hired: $scope.hiredOptions[0],
-			hiredAfter: undefined,
-			// step 3
-			entireLearningPath: true,
-			courses: []
-		};
-
-		// summary model for final step
-		$scope.summary = {
-		};
-		Object.defineProperty($scope.summary, 'stores', {
-			get: function() {
-				return $scope.model.stores.filter(function(store) {
-					return store.selected;
-				});
-			}
-		});
-		Object.defineProperty($scope.summary, 'learners', {
-			get: function() {
-				return $scope.model.audience.text;
-			}
-		});
-		Object.defineProperty($scope.summary, 'hired', {
-			get: function() {
-				return $scope.model.hired.id === 2 ? undefined : $scope.model.hired.text;
-			}
-		});
-		Object.defineProperty($scope.summary, 'hiredAfter', {
-			get: function() {
-				if ($scope.model.hiredAfter) {
-					return $filter('date')($scope.model.hiredAfter, 'shortDate');
-				} else {
-					return 'Not Selected';
-				}
-			}
-		});
-		Object.defineProperty($scope.summary, 'entireLearningPath', {
-			get: function() {
-				if ($scope.model.entireLearningPath) {
-					return 'Entire Learning Path';
-				} else {
-					return undefined;
-				}
-			}
-		});
-		Object.defineProperty($scope.summary, 'courses', {
-			get: function() {
-				if (!$scope.model.entireLearningPath) {
-					return $scope.model.courses.filter(function(course) {
-						return course.selected;
-					});
-				} else {
-					return [];
-				}
-			}
-		});
 
 		$scope.showHiredAfterDateinput = false;
 		$scope.hiredChanged = function(option) {
 			console.log('hiredChanged', option);
-			$scope.showHiredAfterDateinput = (option.id === 2);
+			$scope.showHiredAfterDateinput = (option.otherField);
 		};
 
 		// Step 1: Select PCs

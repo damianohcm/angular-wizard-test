@@ -19,6 +19,9 @@
         this.isCurrent = args.isCurrent;
         this.isDone = args.isDone;
         this.hasError = args.hasError;
+
+        this.validateAction = args.validateAction;
+        this.errorMsg = undefined;
     };
 
     WizardStep.prototype = {

@@ -18,7 +18,7 @@
                         ng-click="clickOnStep(step)">
                         <span class="current-info audible">current step: </span>
                         <span class="number">{{step.id}}.</span> <span>{{step.title}}</span>
-                        <span class="checkmark" ng-show="step.isDone"><i class="fa fa-check"></i></span>
+                        <span class="indicator" ng-show="step.isDone || step.hasError" title="{{step.errorMsg || 'Done'}}"><i ng-class="step.hasError ? 'fa fa-exclamation' : 'fa fa-check'"></i></span>
                     </a>
 
                     <a role="tab" aria-disabled="true" aria-selected="false">
