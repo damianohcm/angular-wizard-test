@@ -5,7 +5,8 @@
 		[
 			'ngRoute', 
 			'ngAnimate', 
-			'ui.bootstrap'
+			'ui.bootstrap',
+			'ngTagsInput'
 		]);
 
 	// indeterminate-checkbox directive for tri-state checkbox

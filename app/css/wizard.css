@@ -350,10 +350,6 @@
     padding-top: 10px;
     box-shadow: inset 0px 1px 0px 0px #DFDFDF;
 }
-.scroll-container > .scroll-pane div {
-    font-family: Gotham;
-    margin-bottom:8px;
-}
 .scroll-container > .scroll-pane div > label {
     cursor: pointer;
     font-family: Gotham;
@@ -380,6 +376,11 @@
     display: none;
 }
 
+div.checkboxContainer,
+label.radio,
+.scroll-container > .scroll-pane div > label.radio {
+    margin-bottom: 8px;
+}
 .checkbox i {
     color: transparent;
     font-size: 12pt;
@@ -436,13 +437,17 @@ label.radio > input:checked + i {
 }
 
 .text-search {
+    
+}
+tags-input {
     width: 372px;
-    height: 40px;
     background-color: #F7F7F7;
     border: 2px solid #9B9B9B;
     border-radius: 5px;
-    margin-left: 8px;
-    padding: 8px;
+    margin-left: 12px;;
+}
+tags-input .tags {
+    border: 0;
 }
 
 .p-l-30 {
@@ -457,4 +462,8 @@ label.radio > input:checked + i {
     border: solid 1px #ccc;
     padding: 3px 9px;
     margin: 0px 4px 4px 0px;
+}
+
+.text-muted {
+    color: #999;
 }

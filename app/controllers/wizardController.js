@@ -334,11 +334,48 @@ $scope.hiredAfterDatepickerPopup = {
 $scope.datePickerOptions = {
     dateDisabled: false,
     formatYear: 'yyyy',
-    //maxDate: new Date(2020, 5, 22),
-	//minDate: new Date(),
-    startingDay: 1,
+	initDate: new Date(),
+    maxDate: new Date(),
+	minDate: new Date(1945, 1, 1),
+    startingDay: 0,
 	showWeeks: false
 };
+
+
+		// courses
+		$scope.noCoursesFound = false;
+		$scope.loadingCourses = false;
+		$scope.coursesTypeaheadOptions = {
+			debounce: {
+				default: 500,
+				blur: 250
+			},
+			getterSetter: true
+		};
+
+		$scope.getCourses = function(str) {
+			str = str.toLowerCase().trim();
+			console.log('getCourses', str);
+			// return $http.get('//api/path/to/courses', {
+			// 	params: {
+			// 		searchString: str
+			// 	}
+			// 	}).then(function(response){
+			// 		return response.data.results.map(function(item){
+			// 			return item.formatted_address;
+			// 		});
+			// 	});
+			var _temp = '123456789'.split('').map(function(i) {
+				return {
+					id: i,
+					name: 'Course ' + i,
+					selected: true
+				};
+			});
+			return _temp.filter(function(course) {
+				return str.length === 0 || course.name.toLowerCase().indexOf(str) > -1
+			});
+		};
 
 
 		// get data

@@ -34,7 +34,7 @@
                 <label>Courses:</label>
                 <span>
                     <span class="btn pc" ng-if="summary.entireLearningPath">{{summary.entireLearningPath}}</span>
-                    <span class="btn pc" ng-if="!summary.entireLearningPath">
+                    <span ng-if="!summary.entireLearningPath">
                         <span class="btn pc" ng-repeat="course in summary.courses">{{course.name}}</span>
                     </span>
                 </span>
