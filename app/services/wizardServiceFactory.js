@@ -1,7 +1,5 @@
 (function() {
 
-    var _instances = {};
-  
     // service to be exported to angular
 	window.services = window.services || {};
 
@@ -146,30 +144,35 @@
     };
 
 
+    //var _instances = {};
+  
     /**
      * @method getService
      * @description 
      * Returns a service instance associated with a controller (using a controll key)
      */
     var getService = function(controllerKey) {
-        // singleton, do not recreate instance ifit already exists
-        if (!_instances[controllerKey]) {
+        // // singleton, do not recreate instance ifit already exists
+        // if (!_instances[controllerKey]) {
 
-            // create service instance
-            var instance = new WizardModel();
+        //     // create service instance
+        //     var instance = new WizardModel();
             
-            // save instance
-            _instances[controllerKey] = instance;
+        //     // save instance
+        //     _instances[controllerKey] = instance;
 
-            return instance;
-        } else {
-            return _instances[controllerKey];
-        }
+        //     return instance;
+        // } else {
+        //     return _instances[controllerKey];
+        // }
+
+        return new WizardModel();
     };
   
     window.services.wizardServiceFactory = function() {
         return {
             getService: getService
+            //destroyService: destroyService
         };
     };
 

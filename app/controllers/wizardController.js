@@ -4,7 +4,7 @@
 	window.controllers = window.controllers || {};
   
 	window.controllers.wizardController = function($scope, $rootScope, $route, $routeParams, $location, $filter, utilsService, dataService, wizardServiceFactory) {
-
+		
 		this.params = $routeParams;
 
 		// model lookups 
@@ -174,6 +174,7 @@
 		 */
 		$scope.cancel = function cancel() {
 			//this.hide();
+			$location.path('#/');
 		};
 		
 		/**
@@ -376,6 +377,11 @@ $scope.datePickerOptions = {
 				return str.length === 0 || course.name.toLowerCase().indexOf(str) > -1
 			});
 		};
+
+		// cleanup
+		$scope.$on('$destroy', function() {
+			console.log('wizardController destroy event handler');
+		});
 
 
 		// get data

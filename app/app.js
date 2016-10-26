@@ -40,9 +40,15 @@
 
 				// Watch the children for changes
 				var childListWatcher = scope.$watch(function(scope) {
-					return childList.map(function(obj) {
-							return {'selected': obj.selected}
-						});
+					if (childList) {
+						return childList.map(function(obj) {
+								return {
+									selected: obj.selected
+								};
+							});
+					} else {
+						return [];
+					}
 				}, function (items) {
 					//console.log('childListWatcher items', items);
 					console.log('childListWatcher areAllSelected', areAllSelected(items));
